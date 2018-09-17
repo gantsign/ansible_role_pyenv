@@ -1,2 +1,88 @@
 ---
-# tasks file for ansible_role_pyenv
+- name: include OS family specific vars
+  with_first_found:
+    - '../vars/os-families/{{ ansible_os_family }}.yml'
+    - ../vars/os-families/default.yml
+  include_vars: '{{ item }}'
+
+- name: install dependencies
+  become: yes
+  package:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - '{{ pyenv_dependencies }}'
+
+- name: clone Pyenv for users
+  tags:
+    # Suppress warning: [ANSIBLE0006] git used in place of git module
+    # Git module doesn't allow us to set `core.autocrlf=input`.
+    - skip_ansible_lint
+  become: yes
+  become_user: '{{ item }}'
+  command: 'git clone -c core.autocrlf=input --depth=1 https://github.com/pyenv/pyenv.git ~/.pyenv'
+  args:
+    creates: '~{{ item }}/.pyenv'
+  with_items: '{{ pyenv_users }}'
+
+- name: set permissions of pyenv for users
+  become: yes
+  file:
+    path: '~{{ item }}/.pyenv'
+    mode: 'go-w'
+    recurse: yes
+  with_items: '{{ pyenv_users }}'
+
+- name: write .pyenvrc for users
+  become: yes
+  become_user: '{{ item }}'
+  template:
+    src: pyenvrc.j2
+    dest: '~{{ item }}/.pyenvrc'
+    backup: yes
+    mode: 'u=rw,go=r'
+  with_items: '{{ pyenv_users }}'
+
+- name: check for .bash_profile
+  become: yes
+  become_user: '{{ item }}'
+  stat:
+    path: ~/.bash_profile
+  register: bash_profile_check
+  with_items: '{{ pyenv_users }}'
+
+- name: add .pyenvrc to .bash_profile
+  become: yes
+  become_user: '{{ item.item }}'
+  lineinfile:
+    path: '~/.bash_profile'
+    line: 'source ~/.pyenvrc'
+  when:
+    - item.stat.exists
+  loop_control:
+    label: "{{ item.item }}"
+  with_items: '{{ bash_profile_check.results }}'
+
+- name: check for .bashrc
+  become: yes
+  become_user: '{{ item.item }}'
+  stat:
+    path: ~/.bashrc
+  register: bashrc_check
+  when:
+    - not item.stat.exists
+  loop_control:
+    label: "{{ item.item }}"
+  with_items: '{{ bash_profile_check.results }}'
+
+- name: add .pyenvrc to .bashrc
+  become: yes
+  become_user: '{{ item.item.item }}'
+  lineinfile:
+    path: '~/.bashrc'
+    line: 'source ~/.pyenvrc'
+  when:
+    - (not item.item.stat.exists) and item.stat.exists
+  loop_control:
+    label: "{{ item.item.item }}"
+  with_items: '{{ bashrc_check.results }}'

@@ -1,5 +1,23 @@
 ---
 - name: Converge
   hosts: all
+
+  pre_tasks:
+    - name: install zsh
+      package:
+        name: zsh
+        state: present
+
+    - name: create test user
+      become: yes
+      user:
+        name: '{{ item }}'
+        home: '/home/{{ item }}'
+        createhome: yes
+      with_items:
+        - test_usr1
+
   roles:
     - role: ansible_role_pyenv
+      pyenv_users:
+        - test_usr1
