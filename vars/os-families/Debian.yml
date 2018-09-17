@@ -1,0 +1,21 @@
+---
+# Dependencies for Pyenv and this role
+pyenv_dependencies:
+  # https://github.com/pyenv/pyenv/wiki/common-build-problems
+  - build-essential
+  - libssl-dev
+  - zlib1g-dev
+  - libbz2-dev
+  - libreadline-dev
+  - libsqlite3-dev
+  - wget
+  - curl
+  - llvm
+  - libncurses5-dev
+  - libncursesw5-dev
+  - xz-utils
+  - tk-dev
+  - libffi-dev
+  - liblzma-dev
+  # Role dependencies
+  - git

@@ -1,0 +1,16 @@
+---
+# Dependencies for Pyenv and this role
+pyenv_dependencies:
+  # https://github.com/pyenv/pyenv/wiki/common-build-problems
+  - zlib-devel
+  - bzip2
+  - bzip2-devel
+  - readline-devel
+  - sqlite
+  - sqlite-devel
+  - openssl-devel
+  - xz
+  - xz-devel
+  - libffi-devel
+  # Role dependencies
+  - git
