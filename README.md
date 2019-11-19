@@ -35,7 +35,7 @@ Requirements
 
         * Fedora
 
-            * 28
+            * 31
 
     * Note: other versions are likely to work but have not been tested.
 
