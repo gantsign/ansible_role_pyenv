@@ -8,10 +8,8 @@
 - name: install dependencies
   become: yes
   package:
-    name: '{{ item }}'
+    name: '{{ pyenv_dependencies }}'
     state: present
-  with_items:
-    - '{{ pyenv_dependencies }}'
 
 - name: clone Pyenv for users
   tags:
