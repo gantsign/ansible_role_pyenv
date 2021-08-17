@@ -1,7 +1,7 @@
 Ansible Role: Pyenv
 ===================
 
-[![Build Status](https://travis-ci.com/gantsign/ansible_role_pyenv.svg?branch=master)](https://travis-ci.com/gantsign/ansible_role_pyenv)
+[![Tests](https://github.com/gantsign/ansible_role_pyenv/workflows/Tests/badge.svg)](https://github.com/gantsign/ansible_role_pyenv/actions?query=workflow%3ATests)
 [![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-gantsign.pyenv-blue.svg)](https://galaxy.ansible.com/gantsign/pyenv)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/gantsign/ansible_role_pyenv/master/LICENSE)
 
