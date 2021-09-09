@@ -41,46 +41,52 @@
     mode: 'u=rw,go=r'
   with_items: '{{ pyenv_users }}'
 
-- name: check for .bash_profile
+- name: add .pyenvrc to .profile
   become: yes
   become_user: '{{ item }}'
-  stat:
-    path: ~/.bash_profile
-  register: bash_profile_check
+  lineinfile:
+    path: '~/.profile'
+    line: 'source ~/.pyenvrc'
+    create: yes
+    mode: 'u=rw,go=r'
   with_items: '{{ pyenv_users }}'
 
 - name: add .pyenvrc to .bash_profile
   become: yes
-  become_user: '{{ item.item }}'
+  become_user: '{{ item }}'
   lineinfile:
     path: '~/.bash_profile'
     line: 'source ~/.pyenvrc'
-  when:
-    - item.stat.exists
-  loop_control:
-    label: "{{ item.item }}"
-  with_items: '{{ bash_profile_check.results }}'
-
-- name: check for .bashrc
-  become: yes
-  become_user: '{{ item.item }}'
-  stat:
-    path: ~/.bashrc
-  register: bashrc_check
-  when:
-    - not item.stat.exists
-  loop_control:
-    label: "{{ item.item }}"
-  with_items: '{{ bash_profile_check.results }}'
+    create: yes
+    mode: 'u=rw,go=r'
+  with_items: '{{ pyenv_users }}'
 
 - name: add .pyenvrc to .bashrc
   become: yes
-  become_user: '{{ item.item.item }}'
+  become_user: '{{ item }}'
   lineinfile:
     path: '~/.bashrc'
     line: 'source ~/.pyenvrc'
-  when:
-    - (not item.item.stat.exists) and item.stat.exists
-  loop_control:
-    label: "{{ item.item.item }}"
-  with_items: '{{ bashrc_check.results }}'
+    create: yes
+    mode: 'u=rw,go=r'
+  with_items: '{{ pyenv_users }}'
+
+- name: add .pyenvrc to .zprofile
+  become: yes
+  become_user: '{{ item }}'
+  lineinfile:
+    path: '~/.zprofile'
+    line: 'source ~/.pyenvrc'
+    create: yes
+    mode: 'u=rw,go=r'
+  with_items: '{{ pyenv_users }}'
+
+- name: add .pyenvrc to .zshrc
+  become: yes
+  become_user: '{{ item }}'
+  lineinfile:
+    path: '~/.zshrc'
+    line: 'source ~/.pyenvrc'
+    create: yes
+    mode: 'u=rw,go=r'
+  with_items: '{{ pyenv_users }}'
